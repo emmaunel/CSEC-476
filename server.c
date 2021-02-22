@@ -10,8 +10,45 @@
 #define DOWNLOAD "d"
 #define PING "p"
 #define SHELL "s"
+#define EXIT "e"
+
+#define MAX 1024
 
 void yay_connection(int sockfd){
+
+    char buf[MAX];
+
+    for(;;){
+        bzero(buf, MAX);
+
+        // read the message from client and copy it in buffer
+        read(sockfd, buf, sizeof(buf));
+        printf("From client: %s\n", buf);
+        // bzero(buf, MAX);
+
+        if (strncmp(EXIT, buf, strlen(EXIT)) == 0) { 
+            printf("Server Exit...\n"); 
+            break; 
+        } else if (strncmp(COMMAND, buf, strlen(COMMAND)) == 0) {
+            /* code */
+        } else if (strncmp(DOWNLOAD, buf, strlen(DOWNLOAD)) == 0) {
+            /* code */
+        } else if (strncmp(PING, buf, strlen(PING)) == 0) {
+            /* code */
+        } else if (strncmp(SHELL, buf, strlen(SHELL)) == 0) {
+            /* code */
+        } 
+
+        // if(buf == 0) {
+        //     puts("Client disconnected");
+        //     fflush(stdout);
+        // }else if(buf == -1){
+        //     perror("recv failed");
+        
+        // }
+        
+    }
+
     write(sockfd, "test", 4);
 }
 

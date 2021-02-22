@@ -1,0 +1,36 @@
+// Send OS Information to server
+// Username
+// Running process
+// Have a buffer overflow exploit
+
+
+
+// 1. Create a list of findings that could be automatically validated, or not. 
+// - Regardless of automation or not, create step-by-step attack replication to validate if the vulnerability has been fixed or not 
+
+// - Think about different ways the findings can be validated, and see if those can be bypassed (and exploited, again). 
+
+// 2. Re-check all of the installation script 
+
+// 3. Create a list of hosts & ports to go after for quick low hanging fruit attacks 
+// - If there were no low hanging fruit, there might be one, this time. 
+
+// 4. If any of the people remember credentials, make sure to jot them down in physical notes and use them 
+
+// 5. Create a list of MITRE ATTACK that could be useful for us. 
+// - Start by creating a list from our report - We found some good ones there.
+
+
+struct l_info {
+  uint32_t l_checksum;
+  uint32_t l_magic; // "UPX!" [55 50 58 21]
+  uint16_t l_lsize; // loader size
+  uint8_t l_version; // version info
+  uint8_t l_format; // UPX format
+};
+
+struct p_info {
+  uint32_t p_progid; // program header id [00 00 00 00]
+  uint32_t p_filesize; // filesize [same as blocksize]
+  uint32_t p_blocksize; // blocksize [same as fileize]
+}; 
