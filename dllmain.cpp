@@ -30,40 +30,6 @@ char* decryptfunction(char* command) {
 	return command;
 }
 
-
-char* decrypting(char* inbound) {
-	char ch;
-	for (int i = 0; inbound[i] != '\0'; ++i) {
-		ch = inbound[i];
-		//decrypt for lowercase letter
-		if (ch == '\\' || ch == ':' || ch == ' ' || ch == '.') {
-			inbound[i] = ch;
-		}
-		else if (ch >= 'a' && ch <= 'z') {
-			ch = ch - 4;
-			if (ch < 'a') {
-				ch = ch + 'z' - 'a' + 1;
-			}
-			inbound[i] = ch;
-		}
-		//decrypt for uppercase letter
-		else if (ch >= 'A' && ch <= 'Z') {
-			ch = ch - 4;
-			if (ch < 'A') {
-				ch = ch + 'Z' - 'A' + 1;
-			}
-			inbound[i] = ch;
-		}
-		else if (ch >= 'A' && ch <= 'Z') {
-			ch = ch - 4;
-			if (ch < 'A') {
-				ch = ch + 'Z' - 'A' + 1;
-			}
-			inbound[i] = ch;
-		}
-	}
-	return inbound;
-}
 char* encoderesult(const unsigned char* result, size_t resultlen) {
 	unsigned char* out, * pos;
 	const unsigned char* end, * in;
